@@ -121,18 +121,12 @@ std::vector<board_t> generate_final_boards(int count) {
 }
 
 void constraint_solve(int i, int j, bool cons[10], const board_t& res) {
-    // 排除本行已有的数字
+    // 行列约束
     for (int k = 0; k < 9; k++) {
-        if (k == j || res[i][k] == 0)continue;
-        cons[res[i][k]] = 1;
+        if(res[i][k] != 0) cons[res[i][k]] = 1;
+        if(res[k][j] != 0) cons[res[k][j]] = 1;
     }
-
-    // 排除本列已有的数字
-    for (int k = 0; k < 9; k++) {
-        if (k == i || res[k][j] == 0)continue;
-        cons[res[k][j]] = 1;
-    }
-    // 九宫格约束
+    // 九宫约束
     int n, m;
     if (i / 3 == 0)n = 0;
     else if (i / 6 == 0)n = 3;
@@ -153,7 +147,6 @@ void constraint_solve(int i, int j, bool cons[10], const board_t& res) {
 }
 
 void solve(int i, int j, board_t& res, int solve_num) {
-
     if (j == 9) {
         i++;
         j = 0;
@@ -166,7 +159,6 @@ void solve(int i, int j, board_t& res, int solve_num) {
     if (res[i][j] == 0) {
         bool cons[10] = { false };
         constraint_solve(i, j, cons, res);
-
         for (int k = 1; k < 10; k++) {
             if (cons[k]) continue;
             res[i][j] = k;
@@ -218,7 +210,6 @@ board_t dig(board_t board, int hole) {
 board_t generate_game_board(board_t board, bool unique, int hole) {
     board_t game_board = dig(board, hole);
     if (unique) {
-        
         while (true) {
             uniqueflag = 0;
             board_t res = board;
